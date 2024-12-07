@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Step 1: Load the data
+# Assume 'df' is your DataFrame, e.g., df = pd.read_csv('your_dataset.csv')
+df = pd.read_csv('/mnt/data/your_dataset.csv')
+
+# Step 2: Encode categorical variables
+label_encoder = LabelEncoder()
+df['person_home_ownership'] = label_encoder.fit_transform(df['person_home_ownership'])
+df['loan_intent'] = label_encoder.fit_transform(df['loan_intent'])
+df['loan_grade'] = label_encoder.fit_transform(df['loan_grade'])
+df['loan_status'] = label_encoder.fit_transform(df['loan_status'])  # Assuming 'Paid' -> 1 and 'Unpaid' -> 0
+
+# Step 3: Handle missing values (if any)
+df = df.dropna()  # Or use df.fillna() for imputation
+
+# Step 4: Features and target variable
+X = df.drop('loan_status', axis=1)  # All columns except the target
+y = df['loan_status']  # Target variable
+
+# Step 5: Split the data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 6: Standardize the data (for models like Logistic Regression)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Step 7: Train models
+
+# Logistic Regression
+lr_model = LogisticRegression()
+lr_model.fit(X_train, y_train)
+lr_preds = lr_model.predict(X_test)
+
+# Random Forest
+rf_model = RandomForestClassifier()
+rf_model.fit(X_train, y_train)
+rf_preds = rf_model.predict(X_test)
+
+# XGBoost
+xgb_model = XGBClassifier()
+xgb_model.fit(X_train, y_train)
+xgb_preds = xgb_model.predict(X_test)
+
+# Step 8: Evaluate models
+print("Logistic Regression Accuracy:", accuracy_score(y_test, lr_preds))
+print("Random Forest Accuracy:", accuracy_score(y_test, rf_preds))
+print("XGBoost Accuracy:", accuracy_score(y_test, xgb_preds))
+
+# Classification report for all models
+print("\nLogistic Regression Classification Report:\n", classification_report(y_test, lr_preds))
+print("\nRandom Forest Classification Report:\n", classification_report(y_test, rf_preds))
+print("\nXGBoost Classification Report:\n", classification_report(y_test, xgb_preds))
+
+# Confusion Matrix for all models
+print("\nLogistic Regression Confusion Matrix:\n", confusion_matrix(y_test, lr_preds))
+print("\nRandom Forest Confusion Matrix:\n", confusion_matrix(y_test, rf_preds))
+print("\nXGBoost Confusion Matrix:\n", confusion_matrix(y_test, xgb_preds))
