@@ -1,4 +1,4 @@
-import pandas as pd
+<import pandas as pd
 
 # Example data
 data = {
@@ -9,3 +9,72 @@ data = {
 df = pd.DataFrame(data)
 
 print(df)
+
+>
+Steps in the IQR Method
+1. Calculate Quartiles
+The data is divided into four equal parts:
+
+Q1 (First Quartile): 25% of the data falls below this value.
+Q3 (Third Quartile): 75% of the data falls below this value.
+IQR (Interquartile Range): The range between Q1 and Q3.
+                               IQR=Q3−Q1
+2. Define Outlier Boundaries
+Outliers are defined as data points that lie outside the "inner fences," calculated as:
+
+Lower Bound:
+                          Lower Bound=Q1−1.5×IQR
+
+Upper Bound:
+                          Upper Bound=Q3+1.5×IQR             
+
+3. Identify Outliers
+Data points less than the lower bound or greater than the upper bound are considered outliers.
+
+Example Calculation
+
+Dataset:
+
+Feature1=[10,12,14,15,100,14,16,18,110,19
+
+1, Step 1: Sort the Data
+[10,12,14,14,15,16,18,19,100,110]
+2, Step 2: Calculate Q1 and Q3
+        Q1 (25th Percentile): Median of the lower half (10, 12, 14, 14, 15):
+                         Q1=14
+                      other example  {
+
+Median of the lower half of the data: [1,2,3,4]
+                  Q1 = Median of [1,2,3,4]:
+                            Q1= 2+3/2=25
+                                    }
+        Q3 (75th Percentile): Median of the upper half (16, 18, 19, 100, 110):
+                                 Q3=19
+3, Step 3: Calculate IQR
+                             IQR=Q3−Q1=19−14=5
+
+#Step 4: Calculate Outlier Boundaries
+
+
+
+             Lower Bound=Q1−1.5×IQR=14−1.5×5=14−7.5=6.5
+             Upper Bound=Q3+1.5×IQR=19+1.5×5=19+7.5=26.5
+
+Step 5: Identify Outliers
+         Any data points less than 6.5 or greater than 26.5 are outliers.
+         In this dataset: Outliers are 100 and 110.
+
+
+<
+# Calculate Q1, Q3, and IQR
+Q1 = df[['Feature1', 'Feature2']].quantile(0.25)
+Q3 = df[['Feature1', 'Feature2']].quantile(0.75)
+IQR = Q3 - Q1
+
+# Filter data
+df_no_outliers = df[~((df[['Feature1', 'Feature2']] < (Q1 - 1.5 * IQR)) | 
+                      (df[['Feature1', 'Feature2']] > (Q3 + 1.5 * IQR))).any(axis=1)]
+
+print("\nData after removing outliers using IQR:\n", df_no_outliers)
+
+>
