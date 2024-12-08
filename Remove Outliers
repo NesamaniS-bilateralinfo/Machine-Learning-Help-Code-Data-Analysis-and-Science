@@ -1,0 +1,11 @@
+import pandas as pd
+
+# Example data
+data = {
+    'Feature1': [10, 12, 14, 15, 100, 14, 16, 18, 110, 19],
+    'Feature2': [200, 210, 190, 205, 220, 215, 195, 1000, 225, 230],
+    'Target': [1, 0, 1, 0, 1, 0, 1, 1, 0, 1]
+}
+df = pd.DataFrame(data)
+
+print(df)
