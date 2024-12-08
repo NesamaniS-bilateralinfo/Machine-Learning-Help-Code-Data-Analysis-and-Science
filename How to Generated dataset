@@ -1,0 +1,45 @@
+import pandas as pd
+import numpy as np
+from faker import Faker
+import random
+
+# Initialize Faker for generating realistic names and locations
+fake = Faker()
+
+# Set number of rows for the dataset
+num_rows = 100
+
+# Generate the dataset
+data = {
+    "Order Date": [fake.date_time_this_year() for _ in range(num_rows)],  # datetime
+    "Total Amount": [round(random.uniform(100.0, 5000.0), 2) for _ in range(num_rows)],  # float
+    
+    "Order Quantity": [random.randint(1, 20) for _ in range(num_rows)],  # integer
+    "Product Category": [random.choice(['Electronics', 'Clothing', 'Books', 'Home Appliances']) for _ in range(num_rows)],  # object
+    "Customer Name": [fake.name() for _ in range(num_rows)],  # object
+    "City": [fake.city() for _ in range(num_rows)],  # object
+    "Payment Mode": [random.choice(['Credit Card', 'PayPal', 'Cash', 'Bank Transfer']) for _ in range(num_rows)]  # object
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Function to calculate discount based on Order Quantity and Product Category
+def calculate_discount(order_qty, category):
+    base_discount = {
+        'Electronics': 50,
+        'Clothing': 20,
+        'Books': 10,
+        'Home Appliances': 30
+    }
+    # Increase discount for higher order quantities
+    return round(base_discount[category] + (order_qty * 2), 2)
+
+# Update the Discount Applied column
+df['Discount Applied'] = df.apply(lambda row: calculate_discount(row['Order Quantity'], row['Product Category']), axis=1)
+
+# Save the updated dataset to a CSV file# Save the updated dataset to a CSV file
+updated_file_path = r'C:\Users\Nesamani S\Videos\Kaggle\Datamining\Sales_Data_Updated-2.csv'
+df.to_csv(updated_file_path, index=False)
+
+df.head()
